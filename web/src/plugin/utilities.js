@@ -1,4 +1,3 @@
-import axios from "axios";
 import {store} from "@/router/index"
 
 export function putOnComma(number) {

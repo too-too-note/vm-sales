@@ -1,5 +1,4 @@
 import axios from "axios";
-import {store} from "@/router/index"
 import {generateMessage} from "@/plugin/utilities";
 
 export default {
