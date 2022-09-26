@@ -1,0 +1,25 @@
+<!DOCTYPE generatorConfiguration PUBLIC
+        "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <context id="kotlin" targetRuntime="MyBatis3Kotlin">
+        <jdbcConnection driverClass="org.postgresql.Driver"
+                        connectionURL="jdbc:postgresql://localhost:5432/sigarettes_sys1"
+                        userId="postgres"
+                        password="" />
+        <javaTypeResolver />
+        <javaModelGenerator
+                targetPackage="com.tkapp.cigarettesinventorycontrol.model"
+                targetProject="/Users/userpath/IdeaProjects/CigarettesInventoryControl/src/main/kotlin">
+            <property name="enableSubPackages" value="true" />
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+        <javaClientGenerator
+                type="ANNOTATEDMAPPER"
+                targetPackage="com.tkapp.cigarettesinventorycontrol.mapper"
+                targetProject="/Users/userpath/IdeaProjects/CigarettesInventoryControl/src/main/kotlin">
+            <property name="enableSubPackages" value="true" />
+        </javaClientGenerator>
+        <table schema="data" tableName="%" modelType="flat" />
+    </context>
+</generatorConfiguration>
