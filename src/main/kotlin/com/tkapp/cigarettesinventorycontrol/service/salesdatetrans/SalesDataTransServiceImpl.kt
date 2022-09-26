@@ -34,21 +34,25 @@ class SalesDataTransServiceImpl(
      */
     override fun translateSalesData(form: SalesDataTransForm) {
 
+        // 自販機売り上げ情報の取得
         val vmSales = vendingMachineSalesMapper.select {
             and(vendingMachineId, isEqualTo(form.vendingMachineId!!))
             and(salesDate, isEqualTo(form.toDate!!))
         }
 
+        // 取得できない場合はエラー
         if (vmSales.isNotEmpty()) {
             throw Exception()
         }
 
+        // 自販機売り上げ情報の更新
         vendingMachineSalesMapper.update {
             set(salesDate).equalTo(form.toDate!!)
             and(vendingMachineId, isEqualTo(form.vendingMachineId!!))
             and(salesDate, isEqualTo(form.fromDate!!))
         }
 
+        // 自販機商品売り上げ情報の更新
         vendingMachineItemSalesMapper.update {
             set(salesDate).equalTo(form.toDate!!)
             and(vendingMachineId, isEqualTo(form.vendingMachineId!!))

@@ -24,9 +24,11 @@ import java.math.BigDecimal
 @Service
 class SalesUpdateServiceImpl(
         private val vendingMachineItemSalesMapper: VendingMachineItemSalesMapper,
-        private val vendingMachineSalesMapper: VendingMachineSalesMapper,
 ) : SalesUpdateService {
 
+    /**
+     * 売上の更新
+     */
     override fun updateSales(form: SalesUpdateForm) {
         form.vmItemSalesList.forEach {
             if (it.salesQuantity == null) return@forEach

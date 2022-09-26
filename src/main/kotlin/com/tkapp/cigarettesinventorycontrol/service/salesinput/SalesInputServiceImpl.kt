@@ -16,19 +16,23 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class SalesInputServiceImpl(
-        private val itemMapper: ItemMapper,
         private val vendingMachineItemSalesMapper: VendingMachineItemSalesMapper,
         private val vendingMachineSalesMapper: VendingMachineSalesMapper,
 ) : SalesInputService {
 
+    /**
+     * 売上確定処理
+     */
     @Transactional
     override fun determine(form: SalesInputForm) {
+        // 自販機売り上げ情報の取得
         val vmSales = vendingMachineSalesMapper.selectOne {
             and(vendingMachineId, isEqualTo(form.vendingMachineId!!))
             and(salesDate, isEqualTo(form.salesDate!!))
         }
 
         if (vmSales == null) {
+            // 売上情報がnullの場合は自販機売上情報をinsert
             vendingMachineSalesMapper.insert(VendingMachineSalesRecord(
                     salesPriceActual = form.salesPriceActual,
                     salesPriceOnDisplay = form.salesPriceOnDisplay,
@@ -36,14 +40,15 @@ class SalesInputServiceImpl(
                     vendingMachineId = form.vendingMachineId
             ))
         } else {
+            // 売上情報が存在していた場合は更新
             vmSales.salesPriceActual = form.salesPriceActual
             vmSales.salesPriceOnDisplay = form.salesPriceOnDisplay
             vendingMachineSalesMapper.updateByPrimaryKey(vmSales)
         }
 
+        // 商品売上リスト分ループ
         form.itemSalesList.forEach {
-
-            if (it.update) {
+            if (it.update) {    // 更新フラグがtrueの場合は更新
                 if (it.salesQuantity == null) {
                     vendingMachineItemSalesMapper.delete {
                         and(salesDate, isEqualTo(form.salesDate!!))
@@ -59,7 +64,7 @@ class SalesInputServiceImpl(
                         and(itemId, isEqualTo(it.itemId))
                     }
                 }
-            } else {
+            } else {    // 更新フラグがfalseの場合は追加
                 if (it.salesQuantity == null) {
                     return@forEach
                 }
@@ -75,14 +80,20 @@ class SalesInputServiceImpl(
         }
     }
 
+    /**
+     * 商品IDと売上情報をMap化して返却
+     */
     override fun getMapVendingMachineSalesIdToSales(form: SalesInputSelectForm): Map<Int, Int> {
-        val sales = vendingMachineItemSalesMapper.select {
+        val vmItemSales = vendingMachineItemSalesMapper.select {
             and(salesDate, isEqualTo(form.salesDate!!))
             and(vendingMachineId, isEqualTo(form.vendingMachineId!!))
         }
-        return sales.associate { Pair(it.itemId ?: 0, it.salesQuantity ?: 0) }
+        return vmItemSales.associate { Pair(it.itemId ?: 0, it.salesQuantity ?: 0) }
     }
 
+    /**
+     * 自販機売上情報の取得
+     */
     override fun getVendingMachineSales(form: SalesInputSelectForm): VendingMachineSalesRecord? {
         return vendingMachineSalesMapper.selectOne {
             and(vendingMachineId, isEqualTo(form.vendingMachineId!!))
@@ -90,6 +101,9 @@ class SalesInputServiceImpl(
         }
     }
 
+    /**
+     * 売上情報の削除
+     */
     @Transactional
     override fun deleteSales(form: SalesInputDeleteForm) {
         vendingMachineSalesMapper.delete {

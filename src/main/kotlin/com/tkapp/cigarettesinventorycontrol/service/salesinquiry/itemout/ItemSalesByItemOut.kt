@@ -9,8 +9,7 @@ class ItemSalesByItemOut(
         var price: BigDecimal? = null,
         var orderSeq: Int? = null,
         var salesList: List<VmSalesByItemOut> = listOf(),
-
-        ) {
+) {
     val subtotalQuantity: Int
         get() = salesList.sumOf { it.salesQuantity ?: 0 }
 

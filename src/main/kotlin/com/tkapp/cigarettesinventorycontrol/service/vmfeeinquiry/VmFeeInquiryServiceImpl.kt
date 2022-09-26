@@ -11,6 +11,10 @@ class VmFeeInquiryServiceImpl(
         private val vendingMachineSalesMapper: VendingMachineSalesMapper,
         private val addressBookMapper: AddressBookMapper
 ) : VmFeeInquiryService {
+
+    /**
+     * 手数料情報をまとめて取得
+     */
     override fun select(form: VmFeeInquirySelectForm): VmFeeInquiryOut {
         val companyInfo = addressBookMapper.selectByPrimaryKey("C001") ?: throw Exception()
 
